@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Foods - Culinary Excellence</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Playfair Display & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --bg-dark-brown: #281a14;
+            --bg-light-brown: #3a2a22;
+            --text-cream: #fdf6e9;
+            --text-gray: #d1c7bc;
+            --accent-gold: #eab308;
+            --accent-pink: #db2777; /* Fuchsia-600 */
+            --accent-pink-hover: #ec4899; /* Pink-500 */
+            --accent-pink-light: #f9a8d4; /* Pink-300 */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark-brown);
+            color: var(--text-cream);
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hero-bg {
+            background: linear-gradient(rgba(40, 26, 20, 0.8), rgba(40, 26, 20, 0.8)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .header-scrolled {
+            background-color: rgba(40, 26, 20, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        .menu-card {
+            background-color: var(--bg-light-brown);
+            border: 1px solid #4a3a32;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-pink);
+            color: var(--text-cream);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-pink-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+        }
+        .btn-secondary:hover {
+            background-color: var(--accent-gold);
+            color: var(--bg-dark-brown);
+        }
+
+        /* Order Summary Styling */
+        #order-summary {
+            transition: transform 0.5s ease-in-out;
+        }
+
+        #order-items-container::-webkit-scrollbar { width: 8px; }
+        #order-items-container::-webkit-scrollbar-track { background: #4a3a32; }
+        #order-items-container::-webkit-scrollbar-thumb { background-color: var(--accent-pink); border-radius: 10px; border: 2px solid #4a3a32; }
+        
+        /* Modal Styling */
+        .modal-backdrop { display: none; transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .modal-backdrop.flex { display: flex; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-40 p-5 transition-all duration-300">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-3xl font-playfair font-bold text-white">Royal Foods</a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#menu" class="text-white hover:text-pink-300 transition">Menu</a>
+                <a href="#about" class="text-white hover:text-pink-300 transition">About Us</a>
+                <a href="#" id="order-nav-link" class="btn-primary font-bold py-2 px-4 rounded-lg transition flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Order (<span id="order-count">0</span>)
+                </a>
+            </nav>
+            <button id="mobile-menu-btn" class="md:hidden text-white z-50">
+                <svg id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+                <svg id="menu-close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275q-.275-.275-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7q-.275.275-.7.275t-.7-.275z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-dark-brown z-30 flex flex-col items-center justify-center space-y-8">
+        <a href="#menu" class="mobile-nav-link text-3xl font-bold text-white hover:text-pink-300 transition">Menu</a>
+        <a href="#about" class="mobile-nav-link text-3xl font-bold text-white hover:text-pink-300 transition">About Us</a>
+        <a href="#" id="mobile-order-link" class="mobile-nav-link btn-primary font-bold py-3 px-6 rounded-lg transition text-2xl">View Order</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen flex items-center justify-center text-center">
+        <div class="max-w-3xl px-4">
+            <h1 class="text-5xl md:text-7xl font-playfair font-extrabold text-white leading-tight">A Taste of Royalty, Delivered.</h1>
+            <p class="mt-4 text-xl text-gray-200">Exquisite flavors, customizable to your desire. Your culinary journey begins here.</p>
+            <a href="#menu" class="mt-8 inline-block btn-primary font-bold py-3 px-10 rounded-lg text-lg transition shadow-lg">View The Menu</a>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-playfair font-bold text-pink-300">Our Signature Collection</h2>
+                <p class="text-lg text-gray-400 mt-2">Crafted with passion. Customized for you.</p>
+            </div>
+            <div id="menu-items" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Menu items dynamically inserted -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Us Section -->
+    <section id="about" class="py-20 bg-black bg-opacity-20">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop" class="rounded-lg shadow-2xl" alt="Chef preparing food in a kitchen">
+            </div>
+            <div class="text-left">
+                <h2 class="text-4xl font-playfair font-bold text-pink-300">The Royal Foods Story</h2>
+                <p class="text-lg text-gray-300 mt-4">Founded in the heart of Protea Glen in 2024, Royal Foods began with a simple mission: to elevate the local dining experience. We believe that great food starts with great ingredients, which is why we partner with local farmers and suppliers to source the freshest produce and finest meats Gauteng has to offer.</p>
+                <p class="text-lg text-gray-300 mt-4">Our philosophy is a blend of tradition and innovation, creating dishes that are both comforting and exciting. Every plate we serve is a testament to our commitment to quality, flavor, and the community we proudly serve.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Summary Section -->
+    <section id="order-summary" class="fixed top-0 right-0 h-full w-full max-w-full md:w-96 lg:w-[450px] bg-gray-900/50 backdrop-blur-sm z-50 transform translate-x-full">
+        <div class="bg-dark-brown h-full w-full absolute right-0 flex flex-col p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-700 pb-4">
+                <h2 class="text-2xl font-playfair font-bold text-white">Your Order</h2>
+                <button id="close-order-btn" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+            </div>
+            <div id="order-items-container" class="flex-grow overflow-y-auto my-4">
+                 <p id="empty-cart-message" class="text-gray-400 text-center py-10">Your cart is empty.</p>
+            </div>
+            <div class="border-t border-gray-700 pt-4">
+                <div class="flex justify-between text-xl font-bold mb-4">
+                    <span>Total:</span>
+                    <span id="total-price">R 0.00</span>
+                </div>
+                <form id="order-form">
+                    <input type="text" id="customer-name" placeholder="Your Name" class="w-full bg-gray-700 text-white p-3 rounded-lg mb-3" required>
+                    <input type="tel" id="customer-phone" placeholder="Phone Number" class="w-full bg-gray-700 text-white p-3 rounded-lg mb-4" required>
+                    <button type="submit" class="w-full btn-primary font-bold py-3 rounded-lg transition">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 items-center justify-center p-4 modal-backdrop">
+        <div class="bg-light-brown rounded-lg p-8 text-center shadow-2xl w-full max-w-md transform scale-95 opacity-0 modal-content">
+            <h2 class="text-3xl font-playfair font-bold text-pink-500 mb-4">Thank You!</h2>
+            <p class="text-lg text-gray-200 mb-2">Your order has been placed successfully.</p>
+            <p class="text-gray-300">We will contact you shortly to confirm. Estimated delivery is 30-45 minutes.</p>
+            <button id="close-modal-btn" class="mt-6 btn-primary font-bold py-2 px-6 rounded-lg transition">Close</button>
+        </div>
+    </div>
+
+    <!-- Customization Modal -->
+    <div id="customization-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 items-center justify-center p-4 modal-backdrop">
+        <div class="bg-light-brown rounded-lg p-8 shadow-2xl w-full max-w-lg transform scale-95 opacity-0 modal-content">
+            <div id="customization-content">
+                <!-- Customization options will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400">
+        <div class="container mx-auto py-8 px-6 text-center">
+            <h2 class="text-2xl font-playfair font-bold text-white">Royal Foods</h2>
+            <p class="mt-2">A Dzhoto Holdings Company</p>
+            <p class="mt-4">123 Culinary Lane, Protea Glen, Gauteng | info@royalfoods.co.za | (012) 987-6543</p>
+            <div class="mt-6 border-t border-gray-800 pt-6">
+                <p>&copy; <span id="year"></span> Royal Foods. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA (with robust customization pricing) ---
+            const menuData = [
+                { id: 1, name: 'Royal Lamb Shank', price: 250.00, image: 'lamb-shank-with-rooibos-red-wine-jus-mash-and-baby-veg-main-header.avif', description: 'Slow-braised in a rich red wine and rosemary jus, served with creamy parmesan polenta.', customizable: false },
+                { id: 2, name: 'Kingklip Thermidor', price: 280.00, image: 'images (3).jpg', description: 'Pan-seared Kingklip fillet topped with a creamy mushroom and mustard sauce, grilled to perfection.', customizable: false },
+                { id: 3, name: 'Sovereign Steak', price: 295.00, image: 'download (11).jpg', description: '300g aged beef fillet, flame-grilled to your liking, served with truffle-infused mashed potatoes.', customizable: true, options: [ { type: 'radio', name: 'Cook', label: 'Cooking Preference', required: true, choices: [{ text: 'Rare', price: 0 }, { text: 'Medium-Rare', price: 0 }, { text: 'Medium', price: 0 }, { text: 'Well-Done', price: 0 }] } ] },
+                { id: 4, name: 'Duchess\'s Delight Pasta', price: 180.00, image: 'Creamy-Garlic-Pasta-Delight_done.jpg', description: 'Handmade tagliatelle with wild mushrooms, asparagus, and a light cream and white wine sauce.', customizable: false },
+                { id: 5, name: 'Prince\'s Platter (for 2)', price: 450.00, image: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=2070&auto=format&fit=crop', description: 'A selection of grilled prawns, calamari, and line fish, served with savory rice and dipping sauces.', customizable: false },
+                { id: 6, name: 'Imperial Burger', price: 165.00, image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2070&auto=format&fit=crop', description: '200g pure beef patty with bacon, aged cheddar, caramelized onions, and our secret royal sauce.', customizable: true, options: [ { type: 'checkbox', name: 'Extras', label: 'Add-ons', required: false, choices: [{ text: 'Avocado', price: 20 }, { text: 'Feta', price: 15 }, { text: 'Extra Bacon', price: 25 }] } ] },
+                { id: 7, name: 'Velvet Rose Cheesecake', price: 95.00, image: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=1978&auto=format&fit=crop', description: 'A creamy baked cheesecake infused with rosewater on a buttery biscuit base, topped with crystallized rose petals.', customizable: false },
+                { id: 8, name: 'Golden Molten Lava Cake', price: 110.00, image: 'Red-Velvet-Lava-Cake-20-800x1200.jpg', description: 'Decadent dark chocolate cake with a molten gold-dusted caramel center, served with vanilla bean ice cream.', customizable: false },
+            ];
+
+            let order = [];
+
+            // --- UI ELEMENTS ---
+            const menuItemsContainer = document.getElementById('menu-items');
+            const orderItemsContainer = document.getElementById('order-items-container');
+            const orderCountEl = document.getElementById('order-count');
+            const totalPriceEl = document.getElementById('total-price');
+            const orderSummaryPanel = document.getElementById('order-summary');
+            const customizationModal = document.getElementById('customization-modal');
+            const customizationContent = document.getElementById('customization-content');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const menuOpenIcon = document.getElementById('menu-open-icon');
+            const menuCloseIcon = document.getElementById('menu-close-icon');
+            
+            // --- RENDER FUNCTIONS ---
+            function renderMenu() {
+                menuItemsContainer.innerHTML = menuData.map(item => `
+                    <div class="menu-card rounded-lg overflow-hidden text-left flex flex-col">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-56 object-cover">
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-playfair font-bold text-white">${item.name}</h3>
+                            <p class="text-gray-400 mt-2 flex-grow">${item.description}</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-xl font-bold text-amber-500">R ${item.price.toFixed(2)}</span>
+                                ${item.customizable 
+                                    ? `<button data-id="${item.id}" class="customize-btn btn-secondary font-semibold py-2 px-4 rounded-lg transition">Customize</button>`
+                                    : `<button data-id="${item.id}" class="add-to-order-btn btn-primary font-semibold py-2 px-4 rounded-lg transition">Add to Order</button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function renderOrder() {
+                if (order.length === 0) {
+                    orderItemsContainer.innerHTML = `<p id="empty-cart-message" class="text-gray-400 text-center py-10">Your cart is empty.</p>`;
+                } else {
+                    orderItemsContainer.innerHTML = order.map((orderItem, index) => {
+                        const menuItem = menuData.find(item => item.id === orderItem.id);
+                        const customizationsHtml = orderItem.customizations.map(cust => `
+                            <li class="text-xs text-pink-300 ml-4 list-disc">${cust.text} ${cust.price > 0 ? `(+R${cust.price.toFixed(2)})` : ''}</li>
+                        `).join('');
+                        return `
+                            <div class="flex items-start justify-between py-3 border-b border-gray-800">
+                                <div>
+                                    <p class="font-semibold text-white">${menuItem.name}</p>
+                                    <ul class="mt-1">${customizationsHtml}</ul>
+                                </div>
+                                <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+                                    <button data-index="${index}" class="quantity-change-btn" data-change="-1">-</button>
+                                    <span class="font-bold">${orderItem.quantity}</span>
+                                    <button data-index="${index}" class="quantity-change-btn" data-change="1">+</button>
+                                    <button data-index="${index}" class="remove-item-btn text-red-500 hover:text-red-400 text-xl">&times;</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                updateTotals();
+            }
+
+            // --- ORDER LOGIC ---
+            function addToOrder(itemId, customizations = []) {
+                const customizationString = customizations.map(c => c.text).sort().join('-');
+                const orderId = `${itemId}-${customizationString}`;
+                
+                const existingItem = order.find(item => item.orderId === orderId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    order.push({ id: itemId, quantity: 1, customizations, orderId });
+                }
+                renderOrder();
+                openOrderPanel();
+            }
+
+            function changeQuantity(orderIndex, change) {
+                order[orderIndex].quantity += change;
+                if (order[orderIndex].quantity <= 0) {
+                    removeItem(orderIndex);
+                } else {
+                    renderOrder();
+                }
+            }
+
+            function removeItem(orderIndex) {
+                order.splice(orderIndex, 1);
+                renderOrder();
+            }
+
+            function updateTotals() {
+                const totalItems = order.reduce((sum, item) => sum + item.quantity, 0);
+                const totalPrice = order.reduce((sum, orderItem) => {
+                    const menuItem = menuData.find(item => item.id === orderItem.id);
+                    let itemPrice = menuItem.price;
+                    itemPrice += orderItem.customizations.reduce((custSum, cust) => custSum + cust.price, 0);
+                    return sum + (itemPrice * orderItem.quantity);
+                }, 0);
+
+                orderCountEl.textContent = totalItems;
+                totalPriceEl.textContent = `R ${totalPrice.toFixed(2)}`;
+            }
+
+            // --- MODAL & PANEL LOGIC ---
+            function openOrderPanel() { orderSummaryPanel.classList.remove('translate-x-full'); }
+            function closeOrderPanel() { orderSummaryPanel.classList.add('translate-x-full'); }
+
+            function openModal(modal) {
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');
+                }, 10);
+            }
+
+            function closeModal(modal) {
+                modal.classList.add('opacity-0');
+                modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
+                setTimeout(() => modal.classList.remove('flex'), 300);
+            }
+
+            function openCustomizationModal(itemId) {
+                const item = menuData.find(i => i.id === itemId);
+                let optionsHtml = item.options.map(opt => {
+                    let choicesHtml = opt.choices.map((choice, index) => `
+                        <label class="flex items-center space-x-3">
+                            <input type="${opt.type}" name="${opt.name}" value="${index}" ${opt.required && index === 0 ? 'checked' : ''} class="form-${opt.type} h-5 w-5 text-pink-600 bg-gray-700 border-gray-600 focus:ring-pink-500">
+                            <span>${choice.text} ${choice.price > 0 ? `(+R${choice.price.toFixed(2)})` : ''}</span>
+                        </label>
+                    `).join('');
+                    return `<fieldset class="mb-4"><legend class="font-semibold text-lg text-pink-300 mb-2">${opt.label}${opt.required ? ' *' : ''}</legend><div class="space-y-2">${choicesHtml}</div></fieldset>`;
+                }).join('');
+
+                customizationContent.innerHTML = `
+                    <h2 class="text-3xl font-playfair font-bold text-white mb-4">Customize ${item.name}</h2>
+                    <form id="customization-form" data-id="${item.id}" novalidate>
+                        ${optionsHtml}
+                        <div class="flex justify-end gap-4 mt-6">
+                            <button type="button" class="cancel-customization-btn btn-secondary font-semibold py-2 px-6 rounded-lg transition">Cancel</button>
+                            <button type="submit" class="btn-primary font-semibold py-2 px-6 rounded-lg transition">Add to Order</button>
+                        </div>
+                    </form>
+                `;
+                openModal(customizationModal);
+
+                document.getElementById('customization-form').addEventListener('submit', handleCustomizationSubmit);
+                customizationModal.querySelector('.cancel-customization-btn').addEventListener('click', () => closeModal(customizationModal));
+            }
+            
+            function handleCustomizationSubmit(e) {
+                e.preventDefault();
+                const form = e.target;
+                const itemId = parseInt(form.dataset.id);
+                const item = menuData.find(i => i.id === itemId);
+                const selectedCustomizations = [];
+
+                item.options.forEach(option => {
+                    const selectedInputs = Array.from(form.elements[option.name]).filter(el => el.checked);
+                    if (option.required && selectedInputs.length === 0) {
+                        alert(`Please select an option for ${option.label}.`);
+                        return;
+                    }
+                    selectedInputs.forEach(input => {
+                        selectedCustomizations.push(option.choices[input.value]);
+                    });
+                });
+                
+                addToOrder(itemId, selectedCustomizations);
+                closeModal(customizationModal);
+            }
+
+            // --- EVENT LISTENERS ---
+            menuItemsContainer.addEventListener('click', e => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const itemId = parseInt(btn.dataset.id);
+                if (btn.classList.contains('add-to-order-btn')) {
+                    addToOrder(itemId);
+                } else if (btn.classList.contains('customize-btn')) {
+                    openCustomizationModal(itemId);
+                }
+            });
+            
+            orderItemsContainer.addEventListener('click', e => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const orderIndex = parseInt(btn.dataset.index);
+                if (btn.classList.contains('quantity-change-btn')) {
+                    const change = parseInt(btn.dataset.change);
+                    changeQuantity(orderIndex, change);
+                } else if (btn.classList.contains('remove-item-btn')) {
+                    removeItem(orderIndex);
+                }
+            });
+
+            document.getElementById('order-nav-link').addEventListener('click', (e) => { e.preventDefault(); openOrderPanel(); });
+            document.getElementById('close-order-btn').addEventListener('click', closeOrderPanel);
+            
+            document.getElementById('order-form').addEventListener('submit', e => {
+                e.preventDefault();
+                if(order.length === 0) return;
+                closeOrderPanel();
+                openModal(document.getElementById('success-modal'));
+                order = [];
+                renderOrder();
+                e.target.reset();
+            });
+            document.getElementById('close-modal-btn').addEventListener('click', () => closeModal(document.getElementById('success-modal')));
+            
+            // Mobile Menu Logic
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle('hidden');
+                menuOpenIcon.classList.toggle('hidden');
+                menuCloseIcon.classList.toggle('hidden');
+            }
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        toggleMobileMenu();
+                    }
+                    if(link.id === 'mobile-order-link') {
+                        openOrderPanel();
+                    }
+                });
+            });
+
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // --- INITIALIZATION ---
+            renderMenu();
+            renderOrder();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DZHOTO - Building Legacies, Diversifying Futures</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet.js for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Google Fonts: Montserrat & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --bg-dark: #101010;
+            --bg-light: #181818;
+            --border-color: #2a2a2a;
+            --text-primary: #f3f4f6;
+            --text-secondary: #a1a1aa;
+            --accent-gold: #F59E0B; /* Amber 500 */
+            --accent-gold-dark: #D97706; /* Amber 600 */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .hero-bg {
+            background: linear-gradient(rgba(16, 16, 16, 0.85), rgba(16, 16, 16, 0.85)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Header scroll effect */
+        .header-scrolled {
+            background-color: rgba(16, 16, 16, 0.7);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        /* Card hover effect */
+        .card-transform {
+            position: relative;
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-transform:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+        }
+        .card-transform::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 0.75rem;
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-gold-dark)) border-box;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) padding-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .card-transform:hover::before {
+            opacity: 1;
+        }
+
+        /* Pulsing CTA button */
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+        }
+        .cta-button {
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-gold-dark));
+            animation: pulse 2s infinite;
+        }
+
+        /* Map styling */
+        #map {
+            height: 500px;
+            border-radius: 0.75rem;
+            z-index: 10;
+            border: 1px solid var(--border-color);
+        }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .leaflet-container a.leaflet-popup-close-button {
+            color: var(--text-primary);
+        }
+        
+        /* Animation for hero text */
+        .fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in-up-delay-1 { animation-delay: 0.2s; }
+        .fade-in-up-delay-2 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-30 p-6 transition-all duration-300">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-montserrat font-bold text-white tracking-wider">DZHOTO</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#portfolio" class="text-white hover:text-amber-400 transition duration-300 font-medium">Our Portfolio</a>
+                <a href="#vision" class="text-white hover:text-amber-400 transition duration-300 font-medium">Our Vision</a>
+                <a href="#contact" class="text-white hover:text-amber-400 transition duration-300 font-medium">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen flex items-center justify-center text-center">
+        <div class="max-w-4xl px-4">
+            <h1 class="text-5xl md:text-7xl font-montserrat font-black text-white uppercase tracking-widest fade-in-up">
+                Dzhoto Holdings
+            </h1>
+            <p class="mt-4 text-xl md:text-2xl text-gray-300 font-light fade-in-up fade-in-up-delay-1">
+                Building Legacies. Diversifying Futures. Investing in the Heart of Gauteng.
+            </p>
+            <a href="#portfolio" class="mt-8 inline-block cta-button text-gray-900 font-bold py-4 px-10 rounded-lg text-lg hover:opacity-90 transition duration-300 shadow-lg fade-in-up fade-in-up-delay-2">
+                Explore Our Ventures
+            </a>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24" style="background-color: var(--bg-dark);">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-montserrat font-bold text-white mb-3">Our Diverse Portfolio</h2>
+            <p class="text-lg text-gray-400 mb-16 max-w-2xl mx-auto">From essential services to lifestyle brands, Dzhoto is committed to excellence and innovation across all sectors.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                
+                <!-- Card 1: Royal Foods -->
+                <a href="royal.html" class="card-transform block rounded-xl overflow-hidden group text-left">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1887&auto=format&fit=crop" alt="Gourmet food platter" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/600x400/7c2d12/fef3c7?text=Royal+Foods';">
+                        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold font-montserrat text-white">Royal Foods</h3>
+                        <p class="mt-2 text-gray-400">Delivering exceptional culinary experiences and premium quality food products to our community.</p>
+                        <span class="mt-4 inline-block text-amber-500 font-semibold group-hover:text-amber-400 transition">Visit Site &rarr;</span>
+                    </div>
+                </a>
+
+                <!-- Card 2: Auto Spa & Reseller -->
+                <a href="car.html" class="card-transform block rounded-xl overflow-hidden group text-left">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2070&auto=format&fit=crop" alt="Sleek polished yellow sports car" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1e40af/dbeafe?text=Dzhoto+Auto';">
+                        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold font-montserrat text-white">Dzhoto Auto Spa</h3>
+                        <p class="mt-2 text-gray-400">Premium vehicle care, detailing, and a trusted source for high-quality pre-owned automobiles.</p>
+                        <span class="mt-4 inline-block text-amber-500 font-semibold group-hover:text-amber-400 transition">Learn More &rarr;</span>
+                    </div>
+                </a>
+
+                <!-- Card 3: Sand and Stone -->
+                <a href="sand.html" class="card-transform block rounded-xl overflow-hidden group text-left">
+                    <div class="relative">
+                        <img src="images (2) (1).jpg" alt="Pile of construction sand and stone" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/600x400/a16207/fefce8?text=Dzhoto+Sands';">
+                        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold font-montserrat text-white">Dzhoto Sand & Stone</h3>
+                        <p class="mt-2 text-gray-400">The foundational partner for construction projects, supplying top-grade sand and stone aggregates.</p>
+                        <span class="mt-4 inline-block text-amber-500 font-semibold group-hover:text-amber-400 transition">View Products &rarr;</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision & Map Section -->
+    <section id="vision" class="py-24" style="background-color: var(--bg-light);">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-montserrat font-bold text-white mb-3">Our Strategic Footprint</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">Headquartered in Protea Glen, our vision extends across Gauteng. We are strategically positioned for growth in key economic hubs.</p>
+            </div>
+            <div id="map" class="shadow-2xl"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-black text-gray-400">
+        <div class="container mx-auto py-12 px-6 text-center">
+            <h2 class="text-2xl font-montserrat font-bold text-white">DZHOTO</h2>
+            <p class="mt-2">Building Legacies, Diversifying Futures.</p>
+            <p class="mt-4">123 Business Avenue, Protea Glen, Gauteng, South Africa</p>
+            <p>info@dzhoto.co.za | (012) 345-6789</p>
+            <div class="mt-8 border-t border-gray-800 pt-8">
+                <p>&copy; <span id="year"></span> Dzhoto Holdings (Pty) Ltd. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Header scroll effect
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+
+        // Initialize Leaflet Map
+        const map = L.map('map').setView([-25.747868, 28.229271], 10);
+
+        // Add Tile Layer (dark theme)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // Custom Gold Icon
+        const goldIcon = new L.Icon({
+            iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=%23f59e0b&icon=circle&iconType=awesome&scaleFactor=2&apiKey=YOUR_API_KEY',
+            iconSize: [31, 46],
+            iconAnchor: [15, 42],
+            popupAnchor: [1, -34],
+        });
+
+        // --- Markers for Current Businesses ---
+        const royalFoodsLocation = [-25.731340, 28.218370];
+        const autoSpaLocation = [-25.746111, 28.188056];
+        const sandStoneLocation = [-25.6558, 28.1897];
+
+        L.marker(royalFoodsLocation).addTo(map)
+            .bindPopup('<b>Royal Foods</b><br>Our culinary hub.');
+        L.marker(autoSpaLocation).addTo(map)
+            .bindPopup('<b>Dzhoto Auto Spa</b><br>Premium vehicle care.');
+        L.marker(sandStoneLocation).addTo(map)
+            .bindPopup('<b>Dzhoto Sand & Stone</b><br>Building materials supply.');
+
+        // --- Circles for Future Growth Zones ---
+        const midrandGrowth = [-25.9880, 28.1256];
+        const sandtonGrowth = [-26.1076, 28.0567];
+        
+        const growthCircleOptions = {
+            color: 'var(--accent-gold)',
+            fillColor: 'var(--accent-gold)',
+            fillOpacity: 0.1,
+            radius: 5000
+        };
+
+        L.circle(midrandGrowth, growthCircleOptions).addTo(map)
+             .bindPopup('<b>Future Growth Zone:</b><br>Midrand Logistics & Commercial');
+        L.circle(sandtonGrowth, growthCircleOptions).addTo(map)
+             .bindPopup('<b>Future Growth Zone:</b><br>Sandton Financial & Lifestyle');
+             
+    </script>
+
+</body>
+</html>

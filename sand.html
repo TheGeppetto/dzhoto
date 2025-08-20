@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dzhoto Sand & Stone - Your Foundation for Success</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Roboto Condensed & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- jsPDF Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --bg-dark: #18181b; /* Zinc 900 */
+            --bg-light: #27272a; /* Zinc 800 */
+            --border-color: #3f3f46; /* Zinc 700 */
+            --text-primary: #f4f4f5; /* Zinc 100 */
+            --text-secondary: #a1a1aa; /* Zinc 400 */
+            --accent-yellow: #facc15; /* Yellow 400 */
+            --accent-yellow-dark: #eab308; /* Yellow 500 */
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        .font-roboto-condensed { font-family: 'Roboto Condensed', sans-serif; }
+
+        .hero-bg {
+            background: linear-gradient(rgba(24, 24, 27, 0.8), rgba(24, 24, 27, 0.8)), url('https://images.unsplash.com/photo-1582211583413-3b3b3ad3545b?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .product-card {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Custom input number styles */
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+        
+        /* Quote summary scrollbar */
+        #quote-items-container::-webkit-scrollbar { width: 8px; }
+        #quote-items-container::-webkit-scrollbar-track { background: var(--border-color); }
+        #quote-items-container::-webkit-scrollbar-thumb { background-color: var(--accent-yellow); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-40 p-5 bg-dark/80 backdrop-blur-sm">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-3xl font-roboto-condensed font-bold text-white uppercase tracking-wider">Dzhoto Sand & Stone</a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#products" class="text-white hover:text-yellow-400 transition">Products</a>
+                <a href="#quote" class="text-white hover:text-yellow-400 transition">Get a Quote</a>
+                <a href="#contact" class="text-white hover:text-yellow-400 transition">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-[60vh] flex items-center">
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl text-left">
+                <h1 class="text-5xl md:text-7xl font-roboto-condensed font-bold text-white uppercase leading-tight">Your Foundation for Success.</h1>
+                <p class="mt-4 text-xl text-gray-200">Premium quality aggregates for construction, civil, and residential projects across Gauteng.</p>
+                <a href="#products" class="mt-8 inline-block bg-yellow-400 text-zinc-900 font-bold py-3 px-10 rounded-lg text-lg hover:bg-yellow-500 transition shadow-lg">View Our Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-roboto-condensed font-bold text-white uppercase">Our Products</h2>
+                <p class="text-lg text-gray-400 mt-2">The highest quality sand and stone for any application.</p>
+            </div>
+            <div id="product-listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product listings will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Calculator Section -->
+    <section id="quote" class="py-20 bg-black bg-opacity-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-roboto-condensed font-bold text-white uppercase">Instant Quote Calculator</h2>
+                <p class="text-lg text-gray-400 mt-2">Build your order and get a quote in minutes.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Quote Summary -->
+                <div class="lg:col-span-2 bg-light p-8 rounded-lg border border-border-color">
+                    <h3 class="text-2xl font-roboto-condensed font-bold text-white mb-4">Your Quote Details</h3>
+                    <div id="quote-items-container" class="max-h-96 overflow-y-auto pr-2">
+                        <!-- Quote items will be dynamically inserted here -->
+                        <p id="empty-quote-message" class="text-gray-400 text-center py-10">Your quote is empty. Add products to get started.</p>
+                    </div>
+                    <div class="border-t border-border-color mt-4 pt-4 flex justify-end">
+                        <div class="text-right">
+                            <p class="text-gray-400">Subtotal:</p>
+                            <p class="text-3xl font-bold text-white" id="quote-subtotal">R 0.00</p>
+                            <p class="text-gray-400 mt-2">VAT (15%):</p>
+                            <p class="text-3xl font-bold text-white" id="quote-vat">R 0.00</p>
+                            <p class="text-yellow-400 mt-2">Total:</p>
+                            <p class="text-4xl font-bold text-yellow-400" id="quote-total">R 0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Customer Details & Actions -->
+                <div class="bg-light p-8 rounded-lg border border-border-color">
+                    <h3 class="text-2xl font-roboto-condensed font-bold text-white mb-4">Get Your Official Quote</h3>
+                    <form id="quote-form">
+                        <input type="text" id="customer-name" placeholder="Full Name / Company" class="w-full bg-zinc-700 text-white p-3 rounded-lg mb-3" required>
+                        <input type="tel" id="customer-phone" placeholder="Contact Number" class="w-full bg-zinc-700 text-white p-3 rounded-lg mb-3" required>
+                        <input type="email" id="customer-email" placeholder="Email Address" class="w-full bg-zinc-700 text-white p-3 rounded-lg mb-4" required>
+                        <textarea id="delivery-address" placeholder="Delivery Address" rows="3" class="w-full bg-zinc-700 text-white p-3 rounded-lg mb-4" required></textarea>
+                        
+                        <div class="space-y-3">
+                            <button type="button" id="download-pdf-btn" class="w-full bg-yellow-400 text-zinc-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm-2 13v-3H8v-2h4V7l4 4z"/></svg>
+                                Download as PDF
+                            </button>
+                            <button type="button" id="whatsapp-btn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21c5.46 0 9.91-4.45 9.91-9.91c0-5.46-4.45-9.91-9.91-9.91m4.84 12.11c-.28-.14-1.65-.81-1.9-.9c-.25-.1-c.43-.09-.61.1c-.18.19-.71.81-.88.98c-.16.17-.32.18-.59.06c-.27-.12-1.15-.42-2.19-1.34c-.81-.72-1.36-1.61-1.52-1.88c-.16-.27-.02-.43.09-.57c.1-.12.22-.31.33-.45c.11-.14.15-.25.22-.41c.07-.17.04-.31-.02-.43c-.06-.12-.59-1.42-.81-1.95c-.22-.53-.44-.45-.61-.45c-.16 0-.34-.02-.52-.02c-.18 0-.48.07-.73.34c-.25.27-.96.93-.96 2.27c0 1.34.98 2.63 1.12 2.81c.14.18 1.96 3.01 4.75 4.22c.66.29 1.18.47 1.59.6c.6.19 1.14.16 1.56.1c.48-.07 1.65-.68 1.88-1.34c.24-.66.24-1.23.17-1.34"/></svg>
+                                Send via WhatsApp
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-black text-gray-400">
+        <div class="container mx-auto py-8 px-6 text-center">
+            <h2 class="text-2xl font-roboto-condensed font-bold text-white uppercase">Dzhoto Sand & Stone</h2>
+            <p class="mt-2">A Dzhoto Holdings Company</p>
+            <p class="mt-4">789 Quarry Road, Pretoria, Gauteng | sales@dzhotosand.co.za | (012) 555-5678</p>
+            <div class="mt-6 border-t border-gray-800 pt-6">
+                <p>&copy; <span id="year"></span> Dzhoto Sand & Stone. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const productData = [
+                { id: 1, name: 'Building Sand', price: 450, image: 'silica-sand-3-1.jpg', description: 'Ideal for mortar and general construction.' },
+                { id: 2, name: 'Plaster Sand', price: 550, image: 'images.jpg', description: 'Fine grade for smooth plastering finishes.' },
+                { id: 3, name: '19mm Stone', price: 650, image: '19mm-Stone-1024x769.jpg', description: 'Used for concrete mixes and foundations.' },
+                { id: 4, name: 'G5 Filling', price: 350, image: 'images (1).jpg', description: 'Sub-base material for roads and paving.' },
+            ];
+
+            let quote = []; // { id, quantity }
+
+            // --- UI ELEMENTS ---
+            const productListingsContainer = document.getElementById('product-listings');
+            const quoteItemsContainer = document.getElementById('quote-items-container');
+            
+            // --- RENDER FUNCTIONS ---
+            function renderProducts() {
+                productListingsContainer.innerHTML = productData.map(p => `
+                    <div class="product-card rounded-lg text-left">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-48 object-cover rounded-t-lg">
+                        <div class="p-6">
+                            <h3 class="text-xl font-roboto-condensed font-bold uppercase">${p.name}</h3>
+                            <p class="text-gray-400 text-sm h-10">${p.description}</p>
+                            <p class="text-2xl font-bold my-2 text-yellow-400">R ${p.price.toFixed(2)} <span class="text-sm font-normal text-gray-400">/ m³</span></p>
+                            <div class="flex items-center gap-2 mt-4">
+                                <input type="number" id="qty-${p.id}" min="1" value="1" class="w-20 bg-zinc-700 text-white p-2 rounded-lg text-center">
+                                <button data-id="${p.id}" class="add-to-quote-btn flex-grow bg-yellow-400 text-zinc-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition">Add to Quote</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function renderQuote() {
+                if (quote.length === 0) {
+                    quoteItemsContainer.innerHTML = `<p id="empty-quote-message" class="text-gray-400 text-center py-10">Your quote is empty. Add products to get started.</p>`;
+                } else {
+                    quoteItemsContainer.innerHTML = quote.map(item => {
+                        const product = productData.find(p => p.id === item.id);
+                        return `
+                            <div class="flex items-center justify-between py-3 border-b border-border-color">
+                                <div>
+                                    <p class="font-semibold text-white">${product.name}</p>
+                                    <p class="text-gray-400 text-sm">${item.quantity} m³ @ R ${product.price.toFixed(2)}</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <p class="font-bold text-lg">R ${(item.quantity * product.price).toFixed(2)}</p>
+                                    <button data-id="${item.id}" class="remove-from-quote-btn text-red-500 hover:text-red-400 text-2xl">&times;</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                updateTotals();
+            }
+
+            function updateTotals() {
+                const subtotal = quote.reduce((sum, item) => {
+                    const product = productData.find(p => p.id === item.id);
+                    return sum + (product.price * item.quantity);
+                }, 0);
+                const vat = subtotal * 0.15;
+                const total = subtotal + vat;
+
+                document.getElementById('quote-subtotal').textContent = `R ${subtotal.toFixed(2)}`;
+                document.getElementById('quote-vat').textContent = `R ${vat.toFixed(2)}`;
+                document.getElementById('quote-total').textContent = `R ${total.toFixed(2)}`;
+            }
+
+            // --- QUOTE LOGIC ---
+            function addToQuote(productId, quantity) {
+                if (quantity <= 0) return;
+                const existingItem = quote.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    quote.push({ id: productId, quantity });
+                }
+                renderQuote();
+            }
+
+            function removeFromQuote(productId) {
+                quote = quote.filter(item => item.id !== productId);
+                renderQuote();
+            }
+            
+            // --- ACTION HANDLERS ---
+            function getQuoteText() {
+                if (quote.length === 0) return "No items in quote.";
+                let text = "Hi Dzhoto Sand & Stone,\n\nI would like a quote for the following items:\n\n";
+                quote.forEach(item => {
+                    const product = productData.find(p => p.id === item.id);
+                    text += `- *${product.name}*: ${item.quantity} m³\n`;
+                });
+                text += `\n*Delivery Address*:\n${document.getElementById('delivery-address').value || 'To be confirmed'}`;
+                text += `\n\n*Contact Details*:\nName: ${document.getElementById('customer-name').value || 'N/A'}\nPhone: ${document.getElementById('customer-phone').value || 'N/A'}`;
+                return text;
+            }
+
+            function handleWhatsApp() {
+                if (quote.length === 0) {
+                    alert('Please add items to your quote first.');
+                    return;
+                }
+                const message = encodeURIComponent(getQuoteText());
+                const phone = "27125555678"; // SA country code + number
+                window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+            }
+
+            function handleDownloadPDF() {
+                if (quote.length === 0) {
+                    alert('Please add items to your quote first.');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const name = document.getElementById('customer-name').value;
+                const phone = document.getElementById('customer-phone').value;
+                const email = document.getElementById('customer-email').value;
+                const address = document.getElementById('delivery-address').value;
+
+                // Header
+                doc.setFontSize(22);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Dzhoto Sand & Stone', 14, 22);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('789 Quarry Road, Pretoria, Gauteng', 14, 28);
+                doc.text('sales@dzhotosand.co.za | (012) 555-5678', 14, 32);
+
+                doc.setFontSize(18);
+                doc.text('Quotation', 190, 22, { align: 'right' });
+                doc.setFontSize(12);
+                const quoteId = Math.floor(1000 + Math.random() * 9000);
+                doc.text(`Quote #: ${quoteId}`, 190, 28, { align: 'right' });
+                doc.text(`Date: ${new Date().toLocaleDateString('en-ZA')}`, 190, 34, { align: 'right' });
+
+                // Customer Details
+                doc.setFont('helvetica', 'bold');
+                doc.text('Quote For:', 14, 50);
+                doc.setFont('helvetica', 'normal');
+                doc.text(name || 'N/A', 14, 56);
+                doc.text(phone || 'N/A', 14, 62);
+                doc.text(email || 'N/A', 14, 68);
+                doc.text('Delivery Address:', 14, 74);
+                doc.text(doc.splitTextToSize(address || 'N/A', 80), 14, 80);
+
+                // Table
+                const tableData = quote.map(item => {
+                    const product = productData.find(p => p.id === item.id);
+                    const itemTotal = product.price * item.quantity;
+                    return [product.name, `${item.quantity} m³`, `R ${product.price.toFixed(2)}`, `R ${itemTotal.toFixed(2)}`];
+                });
+                
+                const subtotal = quote.reduce((sum, item) => sum + (productData.find(p => p.id === item.id).price * item.quantity), 0);
+                const vat = subtotal * 0.15;
+                const total = subtotal + vat;
+
+                tableData.push(['', '', { content: 'Subtotal', styles: { fontStyle: 'bold' } }, `R ${subtotal.toFixed(2)}`]);
+                tableData.push(['', '', { content: 'VAT (15%)', styles: { fontStyle: 'bold' } }, `R ${vat.toFixed(2)}`]);
+                tableData.push(['', '', { content: 'Total', styles: { fontStyle: 'bold', textColor: [0, 0, 0] } }, { content: `R ${total.toFixed(2)}`, styles: { fontStyle: 'bold', textColor: [0, 0, 0] } }]);
+
+                doc.autoTable({
+                    startY: 100,
+                    head: [['Description', 'Quantity', 'Unit Price', 'Total']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [39, 39, 42] }
+                });
+
+                doc.save(`Quote-DzhotoSand-${quoteId}.pdf`);
+            }
+
+            // --- EVENT LISTENERS ---
+            productListingsContainer.addEventListener('click', e => {
+                const btn = e.target.closest('.add-to-quote-btn');
+                if (btn) {
+                    const productId = parseInt(btn.dataset.id);
+                    const qtyInput = document.getElementById(`qty-${productId}`);
+                    const quantity = parseInt(qtyInput.value);
+                    addToQuote(productId, quantity);
+                }
+            });
+
+            quoteItemsContainer.addEventListener('click', e => {
+                const btn = e.target.closest('.remove-from-quote-btn');
+                if (btn) {
+                    removeFromQuote(parseInt(btn.dataset.id));
+                }
+            });
+
+            document.getElementById('whatsapp-btn').addEventListener('click', handleWhatsApp);
+            document.getElementById('download-pdf-btn').addEventListener('click', handleDownloadPDF);
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // --- INITIALIZATION ---
+            renderProducts();
+            renderQuote();
+        });
+    </script>
+</body>
+</html>
